@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mail Us</title>
+<!-- for-mobile-apps -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="keywords" content="Best Store Responsive web template, Bootstrap Web Templates, Flat Web Templates, Android Compatible web template, 
+Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, SonyEricsson, Motorola web design" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false);
+		function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- //for-mobile-apps -->
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+<!-- js -->
+<script src="js/jquery.min.js"></script>
+<!-- //js -->
+<!-- cart -->
+	<script src="js/simpleCart.min.js"> </script>
+<!-- cart -->
+<link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+<!-- for bootstrap working -->
+	<script type="text/javascript" src="js/bootstrap-3.1.1.min.js"></script>
+<!-- animation-effect -->
+<link href="css/animate.min.css" rel="stylesheet"> 
+<script src="js/wow.min.js"></script>
+<script>
+ new WOW().init();
+</script>
+<!-- //animation-effect -->
+
+	<script>
+		$(function () {
+			$("#submiton").click(function () {
+			$.post("/shop/FeedBackServlet",
+					$("#submit").serialize(),
+					function(data){
+						location.href="mail.html"
+					},
+					'json')
+			})
+			$.post(
+					"/shop/user/findUser",
+					{},
+					function (data) {
+						if(data != null){
+							//指向loginoutServlet
+							var msg='<a>欢迎回来,'+data.uname+'</a>' +
+									'<i class="glyphicon glyphicon-log-in" aria-hidden="true" style="margin-left: 25px"></i><a  href="/shop/user/logout">logout</a>';
+							$("#loginUser").html(msg);
+						}else{
+							var msg='<i class="glyphicon glyphicon-log-in" aria-hidden="true"></i><a  href="login.html">login</a>';
+							$("#loginUser").html(msg);
+						}
+
+					},"json"
+			);
+
+			//分类标签
+			$.get('/shop/label/findAll',{},function (data) {
+				var lis1='<h6>Men\'s Wear</h6>';
+				var lis2='<h6>Women\'s Wear</h6>';
+				var lis3='<h6>Kid\'s Wear</h6>';
+				for(var i=0;i<data.length;i++){
+					var li = '<li><a href="products.html?lid='+ data[i].lid + '">' + data[i].lname + '</a></li>';
+					if(data[i].lname.startsWith("women")) {lis2 += li;}
+					else if(data[i].lname.startsWith("men")) {lis1 += li;}
+					else { lis3 += li;}
+				}
+				$("#labellist1").html(lis1);
+				$("#labellist2").html(lis2);
+				$("#labellist3").html(lis3);
+			},'json');
+
+			$.get('/shop/brand/findAllBrand',{},function (data) {
+				var lis1='<h6>Nike\'s Wear</h6>';
+				var lis2='<h6>Li-Ning\'s Wear</h6>';
+				var lis3='<h6>ANTA\'s Wear</h6>';
+				for(var i=0;i<data.length;i++){
+					var li = '<li><a href="brand.html?bid='+ data[i].bid + '">' + data[i].bname + '</a></li>';
+					if(data[i].bname.startsWith("Nike")) {lis1 += li;}
+					else if(data[i].bname.startsWith("Li-Ning")) {lis2 += li;}
+					else { lis3 += li;}
+				}
+				$("#brandlist1").html(lis1);
+				$("#brandlist2").html(lis2);
+				$("#brandlist3").html(lis3);
+			},'json');
+			findCount();
+		});
+
+		//刷新 物品数 总价
+		function findCount() {
+			$.get(
+					"/shop/cart/findAll",
+					{},
+					function (cartList) {
+						//购物车商品总数
+						var count = 0;
+						//购物车商品总价
+						var total = 0;
+						if (cartList != null){
+							for (var i = 0;  i < cartList.length ; i++){
+								var cart = cartList[i];
+								var goods = cart.goods;
+								count += cart.number;
+								//单类商品总价
+								var price = (cart.goods.price * cart.number);
+								total += price;
+							}
+						}
+						$("#simpleCart_quantity").html(count);
+						$("#totalPrice").html("￥" + total + ".00");
+					},
+					"json"
+			)
+		}
+		//添加商品到购物车
+		function addToCart(gid) {
+			$.get(
+					"/shop/cart/addOne",
+					{gid : gid},
+					function () {
+						findCount()
+					},
+					"json"
+			)
+		}
+		//清空购物车
+		function clearCart() {
+			$.get(
+					"/shop/cart/clearCart",
+					{},
+					function () {
+						findCount();
+					},
+					"json"
+			)
+		}
+	</script>
+</head>
+	
+<body>
+<!-- header -->
+<div class="header">
+	<div class="container">
+		<div class="header-grid">
+			<div class="header-grid-left animated wow slideInLeft" data-wow-delay=".5s">
+				<ul>
+					<li><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i><a href="mailto:syh_morar@163.ingstcom">syh_moringstar@163.com</a></li>
+					<li><i class="glyphicon glyphicon-earphone" aria-hidden="true"></i>+1234 567 892</li>
+					<li id="loginUser"><i  class="glyphicon glyphicon-log-in" aria-hidden="true"></i><a href="login.html">Login</a></li>
+					<li><i class="glyphicon glyphicon-book" aria-hidden="true"></i><a href="register.html">Register</a></li>
+				</ul>
+			</div>
+			<div class="header-grid-right animated wow slideInRight" data-wow-delay=".5s">
+				<ul class="social-icons">
+					<li><a href="#" class="facebook"></a></li>
+					<li><a href="#" class="twitter"></a></li>
+					<li><a href="#" class="g"></a></li>
+					<li><a href="#" class="instagram"></a></li>
+				</ul>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+		<div class="logo-nav">
+			<div class="logo-nav-left animated wow zoomIn" data-wow-delay=".5s">
+				<h1><a href="index.html">Best Store <span>Shop anywhere</span></a></h1>
+			</div>
+			<div class="logo-nav-left1">
+				<nav class="navbar navbar-default">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header nav_2">
+						<button type="button" class="navbar-toggle collapsed navbar-toggle1" data-toggle="collapse" data-target="#bs-megadropdown-tabs">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="collapse navbar-collapse" id="bs-megadropdown-tabs">
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="index.html" class="act">主页</a></li>
+							<!-- Mega Menu -->
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">分类 <b class="caret"></b></a>
+								<ul class="dropdown-menu multi-column columns-3">
+									<div class="row">
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown" id="labellist1">
+												<h6>Men's Wear</h6>
+												<li class="li_list"><a href="products.html">Clothing</a></li>
+												<li class="li_list"><a href="products.html">Wallets</a></li>
+												<!--												<li><a href="products.html.html">Shoes</a></li>-->
+												<!--												<li><a href="products.html.html">Watches</a></li>-->
+												<!--												<li><a href="products.html.html">Accessories</a></li>-->
+											</ul>
+										</div>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown" id="labellist2">
+												<h6>Women's Wear</h6>
+												<li class="li_list"><a href="products.html">Clothing</a></li>
+												<li class="li_list"><a href="products.html">Wallets,Bags</a></li>
+												<!--												<li><a href="products.html.html">Footwear</a></li>-->
+												<!--												<li><a href="products.html.html">Watches</a></li>-->
+												<!--												<li><a href="products.html.html">Accessories</a></li>-->
+												<!--												<li><a href="products.html.html">Jewellery</a></li>-->
+												<!--												<li><a href="products.html.html">Beauty & Grooming</a></li>-->
+											</ul>
+										</div>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown" id="labellist3">
+												<h6>Kid's Wear</h6>
+												<!--												<li><a href="products.html.html">Kids Home Fashion</a></li>-->
+												<!--												<li><a href="products.html.html">Boy's Clothing</a></li>-->
+												<li class="li_list"><a href="products.html">Girl's Clothing</a></li>
+												<li class="li_list"><a href="products.html">Shoes</a></li>
+												<!--												<li><a href="products.html.html">Brand Stores</a></li>-->
+											</ul>
+										</div>
+										<div class="clearfix"></div>
+									</div>
+								</ul>
+							</li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">潮牌 <b class="caret"></b></a>
+								<ul class="dropdown-menu multi-column columns-3">
+									<div class="row">
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown" id="brandlist1">
+												<!--												<h6>Home Collection</h6>-->
+												<!--												<li><a href="brand.html">Cookware</a></li>-->
+												<!--												<li><a href="brand.html">Sofas</a></li>-->
+												<!--												<li><a href="brand.html">Dining Tables</a></li>-->
+												<!--												<li><a href="brand.html">Shoe Racks</a></li>-->
+												<!--												<li><a href="brand.html">Home Decor</a></li>-->
+											</ul>
+										</div>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown" id="brandlist2">
+												<!--												<h6>Office Collection</h6>-->
+												<!--												<li><a href="brand.html">Carpets</a></li>-->
+												<!--												<li><a href="brand.html">Tables</a></li>-->
+												<!--												<li><a href="brand.html">Sofas</a></li>-->
+												<!--												<li><a href="brand.html">Shoe Racks</a></li>-->
+												<!--												<li><a href="brand.html">Sockets</a></li>-->
+												<!--												<li><a href="brand.html">Electrical Machines</a></li>-->
+											</ul>
+										</div>
+										<div class="col-sm-4">
+											<ul class="multi-column-dropdown" id="brandlist3">
+												<!--												<h6>Decorations</h6>-->
+												<!--												<li><a href="brand.html">Toys</a></li>-->
+												<!--												<li><a href="brand.html">Wall Clock</a></li>-->
+												<!--												<li><a href="brand.html">Lighting</a></li>-->
+												<!--												<li><a href="brand.html">Top Brands</a></li>-->
+											</ul>
+										</div>
+										<div class="clearfix"></div>
+									</div>
+								</ul>
+							</li>
+							<li><a href="mail.html">提出建议</a></li>
+						</ul>
+					</div>
+				</nav>
+			</div>
+			<div class="logo-nav-right">
+				<div class="search-box">
+					<div id="sb-search" class="sb-search">
+						<form action="/shop/products-search.html">
+							<input class="sb-search-input" placeholder="Enter your search term..." type="search" id="search">
+							<input class="sb-search-submit" type="submit" value="">
+							<span class="sb-icon-search"> </span>
+						</form>
+					</div>
+				</div>
+				<!-- search-scripts -->
+				<script src="js/classie.js"></script>
+				<script src="js/uisearch.js"></script>
+				<script>
+					new UISearch( document.getElementById( 'sb-search' ) );
+				</script>
+				<!-- //search-scripts -->
+			</div>
+			<div class="header-right">
+				<div class="cart box_1">
+					<a href="checkout.html">
+						<h3> <div class="total">
+							<span id="totalPrice">￥0.00</span> (<span id="simpleCart_quantity" class="simpleCart_quantity"></span> 件)</div>
+							<img src="images/bag.png" alt="" />
+						</h3>
+					</a>
+					<p><a href="javascript:clearCart();" class="simpleCart_empty">清空购物车</a></p>
+					<div class="clearfix"> </div>
+				</div>
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+	</div>
+</div>
+<!-- //header -->
+<!-- breadcrumbs -->
+	<div class="breadcrumbs">
+		<div class="container">
+			<ol class="breadcrumb breadcrumb1 animated wow slideInLeft" data-wow-delay=".5s">
+				<li><a href="index.html"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
+				<li class="active">Mail Us</li>
+			</ol>
+		</div>
+	</div>
+<!-- //breadcrumbs -->
+<!-- mail -->
+	<div class="mail animated wow zoomIn" data-wow-delay=".5s">
+		<div class="container">
+			<h3>联系我们</h3>
+			<p class="est">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia 
+				deserunt mollit anim id est laborum.</p>
+			<div class="mail-grids">
+				<div class="col-md-8 mail-grid-left animated wow slideInLeft" data-wow-delay=".5s">
+					<form id="submit">
+						<input type="text" id="ename" name="ename" value="请输入姓名" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '请输入姓名';}" required="">
+						<input type="email" name="email" value="请输入邮箱" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '请输入邮箱';}" required="">
+						<input type="text" name="subject" value="请输入主题" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = '请输入主题';}" required="">
+						<textarea type="text" name="message"  onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Message...';}" required="">您的建议...</textarea>
+						<input type="button" id="submiton"value="现在提交" style="outline:none;border:none;background:#d8703f;
+						font-size:1em;color:#fff;padding:10px 0;width:30%;">
+					</form>
+				</div>
+				<div class="col-md-4 mail-grid-right animated wow slideInRight" data-wow-delay=".5s">
+					<div class="mail-grid-right1">
+						<img src="images/3.png" alt=" " class="img-responsive" />
+						<h4>Rita Williumson <span>Manager</span></h4>
+						<ul class="phone-mail">
+							<li><i class="glyphicon glyphicon-earphone" aria-hidden="true"></i>Phone: +1234 567 893</li>
+							<li><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i>Email: <a href="mailto:info@example.com">info@example.com</a></li>
+						</ul>
+						<ul class="social-icons">
+							<li><a href="#" class="facebook"></a></li>
+							<li><a href="#" class="twitter"></a></li>
+							<li><a href="#" class="g"></a></li>
+							<li><a href="#" class="instagram"></a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+<!--			<iframe class="animated wow slideInLeft" data-wow-delay=".5s" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3098.7638135888296!2d-77.47669308468912!3d39.04350424592369!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b63eb3bc8da92b%3A0x78c8e09ab1cabc90!2sShopping+Plaza%2C+Ashburn%2C+VA+20147%2C+USA!5e0!3m2!1sen!2sin!4v1457602090579" frameborder="0" style="border:0" allowfullscreen></iframe>-->
+		</div>
+	</div>
+<!-- //mail -->
+<!-- footer -->
+	<div class="footer">
+		<div class="container">
+			<div class="footer-grids">
+				<div class="col-md-3 footer-grid animated wow slideInLeft" data-wow-delay=".5s">
+					<h3>关于我们</h3>
+					<p>Duis aute irure dolor in reprehenderit in voluptate velit esse.<span>Excepteur sint occaecat cupidatat 
+						non proident, sunt in culpa qui officia deserunt mollit.</span></p>
+				</div>
+				<div class="col-md-3 footer-grid animated wow slideInLeft" data-wow-delay=".6s">
+					<h3>联系信息</h3>
+					<ul>
+						<li><i class="glyphicon glyphicon-map-marker" aria-hidden="true"></i>1234k Avenue, 4th block, <span>New York City.</span></li>
+						<li><i class="glyphicon glyphicon-envelope" aria-hidden="true"></i><a href="mailto:info@example.com">info@example.com</a></li>
+						<li><i class="glyphicon glyphicon-earphone" aria-hidden="true"></i>+1234 567 567</li>
+					</ul>
+				</div>
+				<div class="col-md-3 footer-grid animated wow slideInLeft" data-wow-delay=".7s">
+					<h3>Flickr Posts</h3>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/13.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/14.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/15.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/16.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/13.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/14.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/15.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/16.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/13.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/14.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/15.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="footer-grid-left">
+						<a href="single.html"><img src="images/16.jpg" alt=" " class="img-responsive" /></a>
+					</div>
+					<div class="clearfix"> </div>
+				</div>
+				<div class="col-md-3 footer-grid animated wow slideInLeft" data-wow-delay=".8s">
+					<h3>博客文章</h3>
+					<div class="footer-grid-sub-grids">
+						<div class="footer-grid-sub-grid-left">
+							<a href="single.html"><img src="images/9.jpg" alt=" " class="img-responsive" /></a>
+						</div>
+						<div class="footer-grid-sub-grid-right">
+							<h4><a href="single.html">culpa qui officia deserunt</a></h4>
+							<p>Posted On 25/3/2016</p>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+					<div class="footer-grid-sub-grids">
+						<div class="footer-grid-sub-grid-left">
+							<a href="single.html"><img src="images/10.jpg" alt=" " class="img-responsive" /></a>
+						</div>
+						<div class="footer-grid-sub-grid-right">
+							<h4><a href="single.html">Quis autem vel eum iure</a></h4>
+							<p>Posted On 25/3/2016</p>
+						</div>
+						<div class="clearfix"> </div>
+					</div>
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+			<div class="footer-logo animated wow slideInUp" data-wow-delay=".5s">
+				<h2><a href="index.html">Best Store <span>shop anywhere</span></a></h2>
+			</div>
+			<div class="copy-right animated wow slideInUp" data-wow-delay=".5s">
+				<p>Copyright &copy; 2016.Company name All rights reserved.<a target="_blank" href="http://www.freemoban.com/">www.freemoban.com</a></p>
+			</div>
+		</div>
+	</div>
+<!-- //footer -->
+</body>
+</html>
